@@ -13,9 +13,11 @@ import com.example.firestorecrudoperations.R;
 import com.example.firestorecrudoperations.util.FirestoreModel;
 import com.example.firestorecrudoperations.util.UserData;
 
+import java.util.HashMap;
+
 public class GetDetails extends AppCompatActivity {
     EditText txt_userID, txt_name, txt_profession, txt_age;
-    Button btn_get, btn_save, btn_delete;
+    Button btn_get, btn_update, btn_delete;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +28,7 @@ public class GetDetails extends AppCompatActivity {
         txt_profession = (EditText) findViewById(R.id.txt_profession);
         txt_age = (EditText) findViewById(R.id.txt_age);
         btn_get = (Button) findViewById(R.id.btn_getData);
-        btn_save = (Button) findViewById(R.id.btn_save);
+        btn_update = (Button) findViewById(R.id.btn_save);
         btn_delete = (Button) findViewById(R.id.btn_delete);
 
         btn_get.setOnClickListener(new View.OnClickListener() {
@@ -35,11 +37,15 @@ public class GetDetails extends AppCompatActivity {
                 new FirestoreModel().getData(txt_userID.getText().toString(), GetDetails.this);
             }
         });
-        btn_save.setOnClickListener(new View.OnClickListener() {
+        btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UserData userData = new UserData(txt_userID.getText().toString(), txt_name.getText().toString(), txt_profession.getText().toString(), txt_age.getText().toString());
-                new FirestoreModel().insertData(userData, GetDetails.this);
+
+                HashMap<String, Object> userHashMap = new HashMap<>();
+                userHashMap.put("name", txt_name.getText().toString());
+                userHashMap.put("profession", txt_profession.getText().toString());
+                userHashMap.put("age", txt_age.getText().toString());
+                new FirestoreModel().updateData(txt_userID.getText().toString(),userHashMap, GetDetails.this);
             }
         });
 
@@ -58,7 +64,7 @@ public class GetDetails extends AppCompatActivity {
     }
 
     public void userDataSuccess() {
-        Toast.makeText(this, "Data saved successfully...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Data updated successfully...", Toast.LENGTH_SHORT).show();
         Intent i = new Intent(GetDetails.this, MainActivity.class);
         startActivity(i);
     }

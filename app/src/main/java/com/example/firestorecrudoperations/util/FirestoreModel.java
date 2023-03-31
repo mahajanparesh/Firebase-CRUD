@@ -15,6 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import kotlin.Unit;
 
@@ -28,9 +29,6 @@ public class FirestoreModel {
                 public void onSuccess(Void unused) {
                     if(activity instanceof AddDetails){
                         ((AddDetails) activity).userDataSuccess();
-                    }
-                    if(activity instanceof GetDetails){
-                        ((GetDetails) activity).userDataSuccess();
                     }
                 }
             });
@@ -76,4 +74,21 @@ public class FirestoreModel {
 
     }
 
+    public void updateData(String userId, HashMap<String, Object> userData, Activity activity){
+        DocumentReference fireStoreRef = dbroot.collection("user").document(userId);
+        try{
+
+            fireStoreRef.update(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    if(activity instanceof GetDetails){
+                        ((GetDetails) activity).userDataSuccess();
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT);
+        }
+
+    }
 }
